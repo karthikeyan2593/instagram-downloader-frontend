@@ -80,8 +80,7 @@ export class App {
 
     link.href = this.videoUrl;
     link.download = 'instagram-reel.mp4';
-    link.target = '_blank';
-
+    
     document.body.appendChild(link);
 
     link.click();
