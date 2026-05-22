@@ -1,0 +1,83 @@
+<div class="bg"></div>
+
+<div class="page">
+  <div class="glass"></div>
+
+  <div class="card">
+
+    <div class="logo-box">
+      <div class="logo-circle">
+        <span>▶</span>
+      </div>
+    </div>
+
+    <h1>InstaSave Pro</h1>
+
+    <p class="subtitle">
+      Download Instagram reels in HD instantly
+    </p>
+
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="reelUrl"
+        placeholder="Paste Instagram Reel URL..."
+      />
+    </div>
+
+    <button
+      (click)="downloadReel()"
+      [disabled]="loading || !reelUrl.trim()">
+      <span *ngIf="!loading">⬇ Download Reel</span>
+      <span *ngIf="loading">Fetching...</span>
+    </button>
+
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="loader"></div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="error">
+      ⚠ {{ errorMessage }}
+    </div>
+
+    <!-- Video + Download -->
+    <div *ngIf="videoUrl" class="result">
+
+      <video
+        [src]="videoUrl"
+        controls
+        autoplay
+        muted
+        playsinline
+        controlsList="nodownload"
+        style="width:100%; border-radius:16px; margin-bottom:16px;">
+      </video>
+
+      <div style="text-align:center; margin-bottom:12px;">
+        <span style="
+          background:rgba(0,200,83,0.15);
+          color:#00e676;
+          border:1px solid rgba(0,200,83,0.3);
+          padding:4px 14px;
+          border-radius:20px;
+          font-size:13px;">
+          ✓ Ready to download
+        </span>
+      </div>
+
+      <button
+        class="download-btn"
+        (click)="startDownload()">
+        ⬇ Save Video
+      </button>
+
+    </div>
+
+    <div class="features">
+      <div class="feature">⚡ Fast Download</div>
+      <div class="feature">🎬 HD Quality</div>
+      <div class="feature">🔒 Safe & Secure</div>
+    </div>
+
+  </div>
+</div>
