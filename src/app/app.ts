@@ -17,14 +17,15 @@ export class App {
   loading = false;
   errorMessage = '';
 
-private apiBase = 'https://instagram-downloader--karthikn2593.replit.app/api/reels';
+  private apiBase = 'https://instagram-downloader--karthikn2593.replit.app/api/reels';
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef  // ← add pannunga
+    private cdr: ChangeDetectorRef
   ) {}
 
   downloadReel() {
+
     if (!this.reelUrl.trim()) {
       this.errorMessage = 'URL enter pannunga!';
       return;
@@ -33,64 +34,58 @@ private apiBase = 'https://instagram-downloader--karthikn2593.replit.app/api/ree
     this.loading = true;
     this.errorMessage = '';
     this.videoUrl = '';
-    this.cdr.detectChanges(); // ← UI update
+
+    this.cdr.detectChanges();
 
     this.http.post<any>(
       `${this.apiBase}/download`,
       { url: this.reelUrl }
     ).subscribe({
+
       next: (response) => {
+
         console.log('Response:', response);
+
         this.loading = false;
+
         if (response?.videoUrl) {
           this.videoUrl = response.videoUrl;
         } else {
           this.errorMessage = response.message || 'Failed!';
         }
-        this.cdr.detectChanges(); // ← UI update
+
+        this.cdr.detectChanges();
       },
+
       error: (err) => {
+
         this.loading = false;
-        this.errorMessage = err?.error?.message || 'Download failed!';
-        this.cdr.detectChanges(); // ← UI update
+
+        this.errorMessage =
+          err?.error?.message || 'Download failed!';
+
+        this.cdr.detectChanges();
       }
     });
   }
 
   startDownload() {
-    if (!this.reelUrl.trim()) return;
 
-    this.loading = true;
-    this.errorMessage = '';
-    this.cdr.detectChanges();
+    if (!this.videoUrl) {
+      this.errorMessage = 'Video not ready!';
+      return;
+    }
 
-    this.http.post(
-      `${this.apiBase}/download-and-stream`,
-      { url: this.reelUrl },
-      { responseType: 'blob' }
-    ).subscribe({
-      next: (blob) => {
-        this.loading = false;
-        this.cdr.detectChanges();
+    const link = document.createElement('a');
 
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        const reelId = this.reelUrl
-        ?.split('/')[0]
-        ?.split('?')[0] || 'reel';
-        link.download = `instagram-reel-${reelId}.mp4`;
+    link.href = this.videoUrl;
+    link.download = 'instagram-reel.mp4';
+    link.target = '_blank';
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      },
-      error: () => {
-        this.loading = false;
-        this.errorMessage = 'Download failed! Try again.';
-        this.cdr.detectChanges();
-      }
-    });
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
   }
 }
