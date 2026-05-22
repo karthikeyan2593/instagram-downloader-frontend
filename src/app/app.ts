@@ -69,26 +69,23 @@ export class App {
     });
   }
 
-  startDownload() {
+startDownload() {
+
   if (!this.videoUrl) {
     this.errorMessage = 'Video not ready!';
     return;
   }
 
-  this.loading = true;
-
   fetch(this.videoUrl)
     .then(response => response.blob())
     .then(blob => {
-
-      this.loading = false;
 
       const blobUrl = window.URL.createObjectURL(blob);
 
       const link = document.createElement('a');
 
       link.href = blobUrl;
-      link.download = 'instagram-reel.mp4';
+      link.download = `instagram-reel-${Date.now()}.mp4`;
 
       document.body.appendChild(link);
 
@@ -99,7 +96,6 @@ export class App {
       window.URL.revokeObjectURL(blobUrl);
     })
     .catch(() => {
-      this.loading = false;
       this.errorMessage = 'Download failed!';
     });
 }
